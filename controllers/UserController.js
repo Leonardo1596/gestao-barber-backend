@@ -50,8 +50,9 @@ const login = async (req, res) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
+        const existingBarbershop = await Barbershop.findOne({ user: user._id });
         if (!user) {
-            console.log('caiu aqui');
+            console.log(user + 'entrou');
             return res.status(400).json({ message: 'Credenciais inválidas.' });
         }
 
@@ -60,7 +61,7 @@ const login = async (req, res) => {
 
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
 
-        res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+        res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role, barbershop: existingBarbershop._id }, message: 'Logado com sucesso' });
     } catch (err) {
         res.status(500).json({ message: 'Erro no login.', error: err.message });
     }
