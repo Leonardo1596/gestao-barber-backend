@@ -12,18 +12,12 @@ const { generateReportJob } = require('./controllers/HistoryReportController');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    origin: 'https://gestaobarber.netlify.app', // apenas seu frontend
-    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'], // cabeçalhos que você usa
-    credentials: true // se você usar cookies/autenticação
-}));
-app.options('*', cors());
+app.use(cors());
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
 // Import routes
-const userRoutes = require('./routes//users');
+const userRoutes = require('./routes/users');
 const serviceRoutes = require('./routes/services');
 const barberRoutes = require('./routes/barbers');
 const appointmentRoutes = require('./routes/appointments');
@@ -40,6 +34,10 @@ app.use(transactionRoutes);
 app.use(productRoutes);
 app.use(reportRoutes);
 app.use(historyReportRoutes);
+
+app.get('/', (req, res) => {
+  res.send('🚀 API está ativa!');
+});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
