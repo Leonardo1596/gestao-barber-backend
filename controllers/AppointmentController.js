@@ -66,7 +66,6 @@ const updateAppointment = async (req, res) => {
         appointment.status = status || appointment.status;
 
         if (status === 'concluido') {
-            console.log('caiu aqui');
             const servicesDocs = await Service.find({ _id: { $in: services || appointment.services } });
             const totalAmount = servicesDocs.reduce((sum, service) => sum + service.price, 0);
 
@@ -149,8 +148,7 @@ const getAppointmentsByDate = async (req, res) => {
                 $gte: start,
                 $lte: end
             }
-        }).populate('barber').populate('services');
-        console.log(appointments);
+        });
 
         res.status(200).json(appointments);
     } catch (error) {

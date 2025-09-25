@@ -52,10 +52,10 @@ const login = async (req, res) => {
         const user = await User.findOne({ email });
         const existingBarbershop = await Barbershop.findOne({ user: user._id });
         if (!user) {
-            console.log(user + 'entrou');
             return res.status(400).json({ message: 'Credenciais inválidas.' });
         }
-
+        
+        console.log('Usuário: ' + user.name + ' entrou');
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) return res.status(400).json({ message: 'Credenciais inválidas.' });
 

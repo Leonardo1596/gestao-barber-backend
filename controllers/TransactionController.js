@@ -13,7 +13,6 @@ const createTransaction = async (req, res) => {
             productDoc.quantity -= quantity;
             await productDoc.save();
             amount = productDoc.price * quantity;
-            console.log(amount);
         }
 
         const transaction = new Transction({ type, entryType, barbershop, amount, description, date, appointment, product, quantity, barber });
