@@ -86,24 +86,27 @@ const updateAppointment = async (req, res) => {
 		if (!appointment)
 			return res
 				.status(404)
-				.json({ message: "Agendamento nao encontrado." });
+				.json({ message: "Agendamento não encontrado." });
 
-		// // Get available slots
-		const availableTimes = await availableSlotsService({
-			date,
-			barber,
-			barbershop,
-		});
+		// Only validates time if the user is changing date, barber or time
+		const shouldValidateSlot = date || barber || hour || barbershop;
 
-		// Check if slot is valid
-		function isValidSlot(hour, availableSlots) {
-			return availableTimes.includes(hour);
-		}
-
-		if (!isValidSlot(hour, availableTimes)) {
-			return res.status(400).json({
-				message: "Horário inválido. Escolha um horário disponível.",
+		if (shouldValidateSlot) {
+			const availableTimes = await availableSlotsService({
+				date: date || appointment.date,
+				barber: barber || appointment.barber,
+				barbershop: barbershop || appointment.barbershop,
 			});
+
+			function isValidSlot(hour, availableSlots) {
+				return availableSlots.includes(hour);
+			}
+
+			if (!isValidSlot(hour || appointment.hour, availableTimes)) {
+				return res.status(400).json({
+					message: "Horário inválido. Escolha um horário disponível.",
+				});
+			}
 		}
 
 		appointment.clientName = clientName || appointment.clientName;
@@ -115,6 +118,7 @@ const updateAppointment = async (req, res) => {
 		appointment.paymentMethod = paymentMethod || appointment.paymentMethod;
 		appointment.status = status || appointment.status;
 
+		// If the appointment was completed, register the transaction
 		if (status === "concluido") {
 			const servicesDocs = await Service.find({
 				_id: { $in: services || appointment.services },
@@ -128,6 +132,7 @@ const updateAppointment = async (req, res) => {
 				type: "entrada",
 				entryType: "agendamento",
 				barbershop: appointment.barbershop,
+				clientName: appointment.clientName,
 				amount: totalAmount,
 				date: appointment.date,
 				appointment: id,

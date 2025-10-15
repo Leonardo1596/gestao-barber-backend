@@ -10,6 +10,7 @@ const availableSlotsService = async ({
 }) => {
 	// Find barbershop by id
 	const barbershopDoc = await Barbershop.findById(barbershop);
+	console.log(barbershopDoc);
 	const allSlots = getAvailableSlots(
 		barbershopDoc.openingTime,
 		barbershopDoc.closingTime,
