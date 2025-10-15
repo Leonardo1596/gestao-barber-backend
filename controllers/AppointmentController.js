@@ -128,7 +128,6 @@ const updateAppointment = async (req, res) => {
 				type: "entrada",
 				entryType: "agendamento",
 				barbershop: appointment.barbershop,
-				description: `Agendamento do cliente ${appointment.clientName} concluido com sucesso`,
 				amount: totalAmount,
 				date: appointment.date,
 				appointment: id,
