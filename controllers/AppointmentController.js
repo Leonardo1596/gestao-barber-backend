@@ -82,6 +82,7 @@ const updateAppointment = async (req, res) => {
 			hour,
 			status,
 			paymentMethod,
+			transactionStatus,
 		} = req.body;
 
 		const appointment = await Appointment.findById(id);
@@ -139,6 +140,7 @@ const updateAppointment = async (req, res) => {
 				date: appointment.date,
 				appointment: id,
 				barber: appointment.barber,
+				status: transactionStatus,
 			});
 			await newTransaction.save();
 		}
