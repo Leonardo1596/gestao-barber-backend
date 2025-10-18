@@ -41,6 +41,8 @@ const createAppointment = async (req, res) => {
 
 		// Check if slot is valid
 		function isValidSlot(hour, availableSlots) {
+			console.log(hour);
+			console.log(availableTimes.includes(hour));
 			return availableTimes.includes(hour);
 		}
 		if (!isValidSlot(hour, availableTimes)) {

@@ -10,7 +10,7 @@ const availableSlotsService = async ({
 }) => {
 	// Find barbershop by id
 	const barbershopDoc = await Barbershop.findById(barbershop);
-	console.log(barbershopDoc);
+	// console.log(barbershopDoc);
 	const allSlots = getAvailableSlots(
 		barbershopDoc.openingTime,
 		barbershopDoc.closingTime,
@@ -32,10 +32,18 @@ const availableSlotsService = async ({
 		const [hour, minute] = start.split(":").map(Number);
 		const startMinutes = hour * 60 + minute;
 
-		const slotCount = Math.ceil(duration / 10);
+		// 🔹 Aplica o buffer de 40 minutos antes
+		const buffer = 30; // MINUTOS
+		const startWithBuffer = startMinutes - buffer;
+
+		// 🔹 Quantidade de slots considerando duração + buffer antes
+		const totalDuration = duration + buffer;
+		const slotCount = Math.ceil(totalDuration / 10);
 
 		for (let i = 0; i < slotCount; i++) {
-			const current = startMinutes + i * 10;
+			const current = startWithBuffer + i * 10;
+			if (current < 0) continue; // evita horários negativos
+
 			const h = String(Math.floor(current / 60)).padStart(2, "0");
 			const m = String(current % 60).padStart(2, "0");
 			bookedSlots.push(`${h}:${m}`);
