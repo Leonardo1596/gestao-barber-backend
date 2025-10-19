@@ -175,10 +175,13 @@ const getAvailableTimes = async (req, res) => {
 	try {
 		const { date, barber, barbershop } = req.params;
 
+		const { excludeId } = req.query;
+
 		const availableTimes = await availableSlotsService({
 			date,
 			barber,
 			barbershop,
+			excludeId,
 		});
 		return res.status(200).json(availableTimes);
 	} catch (err) {
