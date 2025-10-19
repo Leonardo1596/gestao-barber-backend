@@ -66,6 +66,23 @@ const deleteTransaction = async (req, res) => {
 	}
 };
 
+const markAsPaid = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const transaction = await Transction.findById(id);
+		if (!transaction)
+			return res
+				.status(404)
+				.json({ message: "Transação nao encontrada." });
+		transaction.status = "pago";
+		await transaction.save();
+		res.status(200).json(transaction);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ message: "Erro ao marcar transação como paga" });
+	}
+};
+
 const getTransactionsByBarbershop = async (req, res) => {
 	try {
 		const { barbershop } = req.params;
@@ -94,6 +111,7 @@ const getTransactionByPeriod = async (req, res) => {
 module.exports = {
 	createTransaction,
 	deleteTransaction,
+	markAsPaid,
 	getTransactionsByBarbershop,
 	getTransactionByPeriod,
 };
