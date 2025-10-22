@@ -106,7 +106,7 @@ const login = async (req, res) => {
 					name: user.name,
 					email: user.email,
 					role: user.role,
-					barbershop: existingBarbershop._id,
+					barbershop: existingBarbershop ? existingBarbershop._id : '',
 				},
 				message: "Logado com sucesso",
 			});
@@ -121,3 +121,4 @@ module.exports = {
 	register,
 	login,
 };
+
